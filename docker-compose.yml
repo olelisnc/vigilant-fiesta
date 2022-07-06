@@ -2,6 +2,7 @@ version: "3.9"
 volumes:
   db-store:
   psysh-store:
+  minio-store:
 services:
   app:
     build:
@@ -30,6 +31,11 @@ services:
       - DB_DATABASE=${DB_DATABASE:-laravel}
       - DB_USERNAME=${DB_USERNAME:-phper}
       - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_BUCKET=eduki-bucket
+      - AWS_ENDPOINT=http://minio:9000
 
   web:
     build:
@@ -65,6 +71,20 @@ services:
       - MYSQL_USER=${DB_USERNAME:-phper}
       - MYSQL_PASSWORD=${DB_PASSWORD:-secret}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-secret}
+
+  minio:
+    build:
+      context: ./
+      dockerfile: ./infra/docker/minio/Dockerfile
+    volumes:
+      - ./src/storage/app/minio/data:/export
+      - ./src/storage/app/minio/config:/root/.minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
 
   mailhog:
     image: mailhog/mailhog
