@@ -18,5 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/upload', [\App\Http\Controllers\ApiController::class, 'upload']);
+// Route::post('/upload', [\App\Http\Controllers\ApiController::class, 'upload']);
 
+Route::post('/generate', [\App\Http\Controllers\ApiController::class, 'generate']);
+Route::post('/apply', [\App\Http\Controllers\ApiController::class, 'apply']);

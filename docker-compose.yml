@@ -1,8 +1,10 @@
 version: "3.9"
+
 volumes:
   db-store:
   psysh-store:
   minio-store:
+
 services:
   app:
     build:
@@ -86,10 +88,9 @@ services:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
 
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - target: 8025
-        published: ${MAILHOG_PUBLISHED_PORT:-8025}
-        protocol: tcp
-        mode: host
+  tests:
+    image: "lehrermarktplatz/php-dev-test:latest"
+    command: [ "-s", "basic" ]
+    environment:
+      APP_HOST: "web"
+      APP_PORT: "80"
